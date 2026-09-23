@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PrimeReserve — Premium Hotel Reservations</title>
+<meta name="description" content="PrimeReserve is a premium hotel booking platform. Reserve rooms, suites, and getaways fast, secure, and effortlessly." />
+<style>
+  /* ---------- RESET & BASE ---------- */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #0f172a;
+    --accent: #d4af37;
+    --accent-dark: #b8941f;
+    --light: #f8fafc;
+    --gray: #64748b;
+    --dark-gray: #1e293b;
+    --white: #ffffff;
+    --radius: 12px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    --transition: 0.3s ease;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark-gray);
+    background: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+  .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+  /* ---------- NAVBAR ---------- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    z-index: 1000;
+    transition: var(--transition);
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-weight: 500;
+    color: var(--dark-gray);
+    transition: var(--transition);
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--accent-dark); }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: var(--transition);
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    text-align: center;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--primary);
+  }
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212,175,55,0.4);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--white);
+  }
+  .btn-outline:hover {
+    background: var(--white);
+    color: var(--primary);
+  }
+  .hamburger {
+    display: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--primary);
+    background: none;
+    border: none;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background:
+      linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.8) 60%, rgba(51,65,85,0.75) 100%),
+      url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    color: var(--white);
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(212,175,55,0.18), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-text h1 {
+    font-size: 3.4rem;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  .hero-text h1 span { color: var(--accent); }
+  .hero-text .tagline {
+    font-size: 1.05rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero-text p {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+    margin-bottom: 32px;
+    max-width: 520px;
+  }
+  .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  /* Booking card in hero */
+  .booking-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    color: var(--dark-gray);
+  }
+  .booking-card h3 {
+    color: var(--primary);
+    margin-bottom: 22px;
+    font-size: 1.4rem;
+  }
+  .booking-card label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  .booking-card input,
+  .booking-card select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: var(--transition);
+    background: var(--light);
+  }
+  .booking-card input:focus,
+  .booking-card select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--white);
+  }
+  .booking-card .btn {
+    width: 100%;
+    margin-top: 22px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 90px 0; }
+  .section-title { text-align: center; margin-bottom: 60px; }
+  .section-title h2 {
+    font-size: 2.4rem;
+    color: var(--primary);
+    margin-bottom: 14px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .section-title p {
+    color: var(--gray);
+    font-size: 1.05rem;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .section-title .underline {
+    width: 70px; height: 4px;
+    background: var(--accent);
+    margin: 18px auto 0;
+    border-radius: 2px;
+  }
+
+  /* About */
+  .about { background: var(--light); }
+  .about-text {
+    max-width: 850px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #475569;
+  }
+  .about-text p { margin-bottom: 18px; }
+  .about-text strong { color: var(--primary); }
+
+  /* Rooms */
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+  .room-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+  }
+  .room-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  .room-image {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .room-price {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    background: var(--accent);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .room-body { padding: 26px; flex: 1; display: flex; flex-direction: column; }
+  .room-body h3 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+  }
+  .room-body p {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .room-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .room-amenities span {
+    background: var(--light);
+    color: var(--gray);
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-weight: 500;
+  }
+  .room-body .btn { width: 100%; }
+
+  /* Features grid */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+  }
+  .feature-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 36px 28px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border-top: 4px solid transparent;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+    border-top-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+  .feature-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
+  .feature-card p { color: var(--gray); font-size: 0.97rem; }
+
+  /* Why choose */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 26px;
+  }
+  .why-item {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: var(--radius);
+    background: var(--light);
+    transition: var(--transition);
+  }
+  .why-item:hover {
+    background: var(--white);
+    box-shadow: var(--shadow);
+    transform: translateY(-5px);
+  }
+  .why-item .emoji { font-size: 2.2rem; margin-bottom: 12px; }
+  .why-item h4 { color: var(--primary); margin-bottom: 8px; font-size: 1.1rem; }
+  .why-item p { color: var(--gray); font-size: 0.92rem; }
+
+  /* Testimonials */
+  .testimonials { background: var(--light); }
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+  }
+  .testimonial-card {
+    background: var(--white);
+    padding: 32px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: 10px; left: 20px;
+    font-size: 4rem;
+    color: var(--accent);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .testimonial-card p {
+    color: #475569;
+    font-style: italic;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+  }
+  .testimonial-author {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.95rem;
+  }
+  .testimonial-author span {
+    display: block;
+    font-weight: 400;
+    color: var(--gray);
+    font-size: 0.85rem;
+    margin-top: 3px;
+  }
+
+  /* CTA */
+  .cta {
+    background: linear-gradient(135deg, #0f172a, #334155);
+    color: var(--white);
+    text-align: center;
+  }
+  .cta h2 { font-size: 2.4rem; margin-bottom: 18px; font-weight: 800; }
+  .cta p {
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    font-size: 1.1rem;
+  }
+  .cta .hero-buttons { justify-content: center; }
+  .cta .btn-outline { border-color: var(--white); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: #0b1120;
+    color: #94a3b8;
+    padding: 50px 0 30px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-grid h4 { color: var(--white); margin-bottom: 18px; font-size: 1rem; }
+  .footer-grid ul { list-style: none; }
+  .footer-grid li { margin-bottom: 10px; }
+  .footer-grid a { color: #94a3b8; transition: var(--transition); font-size: 0.93rem; }
+  .footer-grid a:hover { color: var(--accent); }
+  .footer-logo { font-size: 1.4rem; font-weight: 800; color: var(--white); margin-bottom: 14px; }
+  .footer-logo span { color: var(--accent); }
+  .footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 24px;
+    text-align: center;
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-text h1 { font-size: 2.5rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 700px) {
+    .nav-links {
+      position: fixed;
+      top: 70px; left: 0; right: 0;
+      background: var(--white);
+      flex-direction: column;
+      gap: 0;
+      padding: 20px 0;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      transform: translateY(-150%);
+      transition: var(--transition);
+    }
+    .nav-links.active { transform: translateY(0); }
+    .nav-links li { padding: 12px 0; text-align: center; }
+    .hamburger { display: block; }
+    .nav-cta { display: none; }
+    .hero-text h1 { font-size: 2rem; }
+    .section-title h2 { font-size: 1.8rem; }
+    .cta h2 { font-size: 1.8rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 0; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="container">
+    <nav>
+      <a href="#home" class="logo">Prime<span>Reserve</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#rooms">Rooms</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#features">Amenities</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+      <a href="#book" class="btn btn-primary nav-cta">Book Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="tagline">Premium Hotel Reservations</p>
+        <h1>Your Perfect Stay,<br /><span>Reserved in Seconds.</span></h1>
+        <p>
+          From cozy standard rooms to luxurious suites, PrimeReserve makes booking
+          your hotel stay fast, secure, and effortless. Find your room, pick your
+          dates, and you're all set.
+        </p>
+        <div class="hero-buttons">
+          <a href="#rooms" class="btn btn-primary">Explore Rooms</a>
+          <a href="#features" class="btn btn-outline">View Amenities</a>
+        </div>
+      </div>
+
+      <!-- Hotel booking form -->
+      <div class="booking-card" id="book">
+        <h3>Book Your Stay</h3>
+        <form onsubmit="event.preventDefault(); alert('Thank you! Your reservation request has been received. We will confirm shortly.');">
+          <div class="form-row">
+            <div>
+              <label for="checkin">Check-In</label>
+              <input type="date" id="checkin" required />
+            </div>
+            <div>
+              <label for="checkout">Check-Out</label>
+              <input type="date" id="checkout" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label for="adults">Adults</label>
+              <select id="adults" required>
+                <option value="1">1 Adult</option>
+                <option value="2" selected>2 Adults</option>
+                <option value="3">3 Adults</option>
+                <option value="4">4 Adults</option>
+              </select>
+            </div>
+            <div>
+              <label for="children">Children</label>
+              <select id="children">
+                <option value="0" selected>0 Children</option>
+                <option value="1">1 Child</option>
+                <option value="2">2 Children</option>
+                <option value="3">3 Children</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="roomtype">Room Type</label>
+          <select id="roomtype" required>
+            <option value="">Select a room</option>
+            <option>Standard Room</option>
+            <option>Deluxe Room</option>
+            <option>Executive Suite</option>
+            <option>Family Room</option>
+            <option>Presidential Suite</option>
+          </select>
+
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="John Doe" required />
+
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" required />
+
+          <button type="submit" class="btn btn-primary">Reserve Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROOMS ================= -->
+<section id="rooms">
+  <div class="container">
+    <div class="section-title">
+      <h2>Our Rooms & Suites</h2>
+      <p>Choose from a range of beautifully designed rooms for every kind of traveler.</p>
+      <div class="underline"></div>
+    </div>
+
+    <div class="rooms-grid">
+
+      <!-- Standard Room -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$89 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Standard Room</h3>
+          <p>A cozy, well-appointed room with everything you need for a comfortable stay.</p>
+          <div class="room-amenities">
+            <span>1 Queen Bed</span>
+            <span>Free Wi-Fi</span>
+            <span>25 m²</span>
+            <span>City View</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+      <!-- Deluxe Room -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$149 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Deluxe Room</h3>
+          <p>Spacious comfort with premium furnishings, a lounge area, and a stunning view.</p>
+          <div class="room-amenities">
+            <span>1 King Bed</span>
+            <span>Free Wi-Fi</span>
+            <span>40 m²</span>
+            <span>Balcony</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+      <!-- Executive Suite -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$249 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Executive Suite</h3>
+          <p>A refined suite with a separate living area — perfect for business or leisure.</p>
+          <div class="room-amenities">
+            <span>King Bed</span>
+            <span>Living Room</span>
+            <span>60 m²</span>
+            <span>Work Desk</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+      <!-- Family Room -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$179 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Family Room</h3>
+          <p>Designed for families — extra space, extra beds, and everything the kids need.</p>
+          <div class="room-amenities">
+            <span>2 Queen Beds</span>
+            <span>Free Wi-Fi</span>
+            <span>45 m²</span>
+            <span>Kids Friendly</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+      <!-- Presidential Suite -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$499 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Presidential Suite</h3>
+          <p>The pinnacle of luxury — panoramic views, private dining, and butler service.</p>
+          <div class="room-amenities">
+            <span>King Bed</span>
+            <span>Butler Service</span>
+            <span>120 m²</span>
+            <span>Panoramic View</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+      <!-- Penthouse -->
+      <div class="room-card">
+        <div class="room-image" style="background-image:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80');">
+          <div class="room-price">$699 / night</div>
+        </div>
+        <div class="room-body">
+          <h3>Penthouse</h3>
+          <p>Top-floor elegance with a private terrace, jacuzzi, and skyline views.</p>
+          <div class="room-amenities">
+            <span>Private Terrace</span>
+            <span>Jacuzzi</span>
+            <span>150 m²</span>
+            <span>Skyline View</span>
+          </div>
+          <a href="#book" class="btn btn-primary">Book This Room</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-title">
+      <h2>Welcome to PrimeReserve Hotels</h2>
+      <p>Where every stay feels like a getaway.</p>
+      <div class="underline"></div>
+    </div>
+    <div class="about-text">
+      <p>
+        <strong>PrimeReserve</strong> is a premium hotel reservation platform built
+        to connect travelers with the perfect room — instantly. No stress, no
+        waiting, just seamless booking.
+      </p>
+      <p>
+        Whether you're planning a weekend escape, a family vacation, or a business
+        trip, our curated rooms and suites are designed to make every stay
+        memorable. Real-time availability, secure payments, and instant
+        confirmation — every time.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AMENITIES / FEATURES ================= -->
+<section id="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>Hotel Amenities</h2>
+      <p>Everything you need for a comfortable and memorable stay.</p>
+      <div class="underline"></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">📶</div>
+        <h3>Free High-Speed Wi-Fi</h3>
+        <p>Stay connected with fast, reliable internet in every room and public area.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍽️</div>
+        <h3>Restaurant & Bar</h3>
+        <p>Enjoy delicious local and international cuisine, plus a fully stocked bar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏊</div>
+        <h3>Swimming Pool</h3>
+        <p>Relax and unwind in our outdoor pool, open daily from sunrise to sunset.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💪</div>
+        <h3>Fitness Center</h3>
+        <p>A fully equipped gym with modern machines and free weights, open 24/7.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚗</div>
+        <h3>Free Parking</h3>
+        <p>Complimentary on-site parking for all guests, with 24-hour security.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛎️</div>
+        <h3>24/7 Concierge</h3>
+        <p>Our friendly staff is available around the clock to assist with anything.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY US ================= -->
+<section class="about" id="why">
+  <div class="container">
+    <div class="section-title">
+      <h2>Why Book With PrimeReserve?</h2>
+      <p>Premium stays. Reliable booking. Effortless experience.</p>
+      <div class="underline"></div>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="emoji">💎</div>
+        <h4>Premium Rooms</h4>
+        <p>Handpicked, beautifully designed rooms for every budget.</p>
+      </div>
+      <div class="why-item">
+        <div class="emoji">⚡</div>
+        <h4>Instant Confirmation</h4>
+        <p>Get confirmed in seconds — no waiting, no back-and-forth.</p>
+      </div>
+      <div class="why-item">
+        <div class="emoji">🔒</div>
+        <h4>Secure Payments</h4>
+        <p>Industry-standard encryption protects every transaction.</p>
+      </div>
+      <div class="why-item">
+        <div class="emoji">🔄</div>
+        <h4>Free Cancellation</h4>
+        <p>Change your plans? Cancel free up to 24 hours before check-in.</p>
+      </div>
+      <div class="why-item">
+        <div class="emoji">⭐</div>
+        <h4>Top-Rated Stays</h4>
+        <p>Thousands of happy guests and consistently great reviews.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="section-title">
+      <h2>What Our Guests Say</h2>
+      <p>Real experiences from real travelers.</p>
+      <div class="underline"></div>
+    </div>
+
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p>Booking was incredibly easy and the room exceeded my expectations. The staff were amazing and the view was stunning!</p>
+        <div class="testimonial-author">Sarah M.<span>New York, USA</span></div>
+      </div>
+      <div class="testimonial-card">
+        <p>PrimeReserve made our family vacation stress-free. The family room was spacious and the kids loved the pool.</p>
+        <div class="testimonial-author">James K.<span>London, UK</span></div>
+      </div>
+      <div class="testimonial-card">
+        <p>I travel for business monthly and always book through PrimeReserve. Fast, reliable, and the suites are top-notch.</p>
+        <div class="testimonial-author">Aisha R.<span>Dubai, UAE</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" id="contact">
+  <div class="container">
+    <h2>Ready to Book Your Stay?</h2>
+    <p>
+      Reserve your room today and enjoy a premium hotel experience — fast,
+      secure, and stress-free.
+    </p>
+    <div class="hero-buttons">
+      <a href="#book" class="btn btn-primary">Book Now</a>
+      <a href="#rooms" class="btn btn-outline">View Rooms</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Prime<span>Reserve</span></div>
+        <p style="font-size:0.93rem;">
+          Premium hotel reservations, made simple. Book rooms and suites fast,
+          secure, and effortlessly.
+        </p>
+      </div>
+      <div>
+        <h4>Hotel</h4>
+        <ul>
+          <li><a href="#rooms">Rooms & Suites</a></li>
+          <li><a href="#features">Amenities</a></li>
+          <li><a href="#book">Book Now</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#why">Why Us</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@primereserve.com">hello@primereserve.com</a></li>
+          <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
+          <li><a href="#">123 Hotel Ave, City</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © <span id="year"></span> PrimeReserve Hotels. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+  });
+
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('active'));
+  });
+
+  // Dynamic year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Smooth scroll with offset
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Auto-set checkout min to check-in + 1 day
+  const checkin = document.getElementById('checkin');
+  const checkout = document.getElementById('checkout');
+  const today = new Date().toISOString().split('T')[0];
+  checkin.min = today;
+  checkout.min = today;
+
+  checkin.addEventListener('change', () => {
+    if (checkin.value) {
+      const nextDay = new Date(checkin.value);
+      nextDay.setDate(nextDay.getDate() + 1);
+      const minCheckout = nextDay.toISOString().split('T')[0];
+      checkout.min = minCheckout;
+      if (checkout.value && checkout.value < minCheckout) {
+        checkout.value = minCheckout;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
